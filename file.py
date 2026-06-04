@@ -1,9 +1,12 @@
 import requests
 import json
 
+#* Functions:
+
+# Prints the downloading message, with a progress bar and padding to overwrite the previous message.
 def downloading_message(pokemon_number, pokemon_total, pokemon, last_length):
 
-      message = f"[{pokemon_number}/{pokemon_total}] Getting data for {pokemon['name']}..."
+      message = f"[{pokemon_number}/{pokemon_total}] Downloading {pokemon['name']}'s data..."
 
       padding = " " * max(0, last_length - len(message))
 
@@ -11,8 +14,22 @@ def downloading_message(pokemon_number, pokemon_total, pokemon, last_length):
 
       return message
 
+def types_fetcher(pokemon_url):
+
+      response = requests.get(pokemon_url)
+      pokemon_data = response.json()
+
+      types = []
+      for type in pokemon_data['types']:
+            types.append(type['type']['name'])
+
+      return types
+
+#* Dicts:
 
 pokemon_types_databank = {}
+
+#* Variables:
 
 response = requests.get(
       'https://pokeapi.co/api/v2/pokemon'
@@ -26,6 +43,8 @@ last_length = 0
 
 running = True
 
+#* Main loop:
+
 while running:
 
       for pokemon in data['results']:
@@ -36,15 +55,7 @@ while running:
 
             last_length = len(message)
 
-            response = requests.get(pokemon['url'])
-            pokemon_data = response.json()
-
-
-            types = []
-            for type in pokemon_data['types']:
-                  types.append(type['type']['name'])
-
-            pokemon_types_databank[pokemon['name']] = types
+            pokemon_types_databank[pokemon['name']] = types_fetcher(pokemon['url'])
 
       if data['next'] != None:
             response = requests.get(data['next'])
@@ -55,3 +66,5 @@ while running:
 
 print()
 print("\nDone!")
+
+print (pokemon_types_databank)
