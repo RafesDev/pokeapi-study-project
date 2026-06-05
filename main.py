@@ -26,16 +26,48 @@ def types_fetcher(pokemon_url):
 
       return types
 
+def starting_message():
+
+      print('\nCached data found. Loading...')
+      print('\nLoading complete!')
+      print('\nStarting the program...')
+      print()
+
+def pokemon_answer_message(pokemon_input, pokemon_types_databank):
+      if pokemon_input in pokemon_types_databank:
+            return f"{pokemon_input}'s type(s) is/are: {pokemon_types_databank[pokemon_input]}"
+      
+      elif pokemon_input == "exit":
+            return "Exiting the program..."
+      
+      else:
+            return f'"{pokemon_input}" is not in the databank. '
+
+def show_cache_status(databank_file):
+      print("Checking for cached data...")
+
+      if Path.exists(databank_file) == False:
+            print("\nNo cached data found. Starting download...")
+            print()
+      else:
+            starting_message()
+
+def dict_to_json(data, file_path):
+      file_path.parent.mkdir(parents=True, exist_ok=True)
+
+      with open(file_path, "w") as file:
+            json.dump(data, file, indent=4)
+
 #* Dicts:
 
 pokemon_types_databank = {}
 
 #* Variables:
 
-databank_file = DATA_DIR / "pokemon_types_databank.json"
-
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data" / "cache"
+
+databank_file = DATA_DIR / "pokemon_types_databank.json"
 
 response = requests.get(
       'https://pokeapi.co/api/v2/pokemon'
@@ -51,16 +83,7 @@ running = True
 
 #* Main loop:
 
-print("Checking for cached data...")
-
-if Path.exists(databank_file) == False:
-      print("\nNo cached data found. Starting download...")
-      print()
-else:
-      print('\nCached data found. Loading...')
-      print('\nLoading complete!')
-      print('\nStarting the program...')
-      print()
+show_cache_status(databank_file)
 
 while running:
 
@@ -80,17 +103,15 @@ while running:
                   response = requests.get(data['next'])
                   data = response.json()
             else:
-                  DATA_DIR.mkdir(parents=True, exist_ok=True)
-
-                  json.dump(pokemon_types_databank, open(DATA_DIR / "pokemon_types_databank.json", "w"), indent=4)
+                  dict_to_json(
+                        pokemon_types_databank, 
+                        databank_file
+                  )
 
                   print()
                   print("\nDownload complete!")
                   print("\nChecking for cached data...")
-                  print('\nCached data found. Loading...')
-                  print('\nLoading complete!')
-                  print('\nStarting the program...')
-                  print()
+                  starting_message()
       else:
             
 
@@ -98,15 +119,11 @@ while running:
 
             pokemon_input = input('Enter a Pokémon name or type "exit" to quit >>> ').lower()
 
-            if pokemon_input in pokemon_types_databank:
-                  print(f"{pokemon_input}'s type(s) is/are: {pokemon_types_databank[pokemon_input]}")
-                  print()
+            print(pokemon_answer_message(
+                  pokemon_input,
+                  pokemon_types_databank
+            ))
+            print()
 
-            elif pokemon_input == "exit":
-                  print("Exiting the program...")
+            if pokemon_input == "exit":
                   running = False
-                  print()
-
-            else:
-                  print(f'"{pokemon_input}" is not in the databank. ')
-                  print()
