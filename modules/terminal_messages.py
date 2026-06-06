@@ -11,7 +11,7 @@ pokemon_search_by_types_file = DATA_DIR / "pokemon_types_databank.json"
 # Prints the downloading message, with a progress bar and padding to overwrite the previous message.
 def downloading_message(pokemon_number, pokemon_total, last_length):
 
-      message = (f"[{(pokemon_number / pokemon_total) * 100:.5f}%] Downloading Pokémon data from PokeAPI...")
+      message = (f"[{(pokemon_number / pokemon_total) * 100:.2f}%] Downloading Pokémon data from PokeAPI...")
 
       padding = " " * max(0, last_length - len(message))
 
