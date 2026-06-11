@@ -1,31 +1,11 @@
 from pathlib import Path
 
-
-BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR / "data" / "cache"
-
-pokemon_search_by_names_file = DATA_DIR / "pokemon_names_databank.json"
-pokemon_search_by_types_file = DATA_DIR / "pokemon_types_databank.json"
-
-
 # Prints the downloading message, with a progress bar and padding to overwrite the previous message.
-def downloading_message(pokemon_number, pokemon_total, last_length):
+def downloading_message(pokemon_number, pokemon_total):
 
-      message = (f"[{(pokemon_number / pokemon_total) * 100:.2f}%] Downloading Pokémon data from PokeAPI...")
+      msg = (f"[{(pokemon_number / pokemon_total) * 100:.2f}%] Downloading Pokémon data from PokeAPI...")
 
-      padding = " " * max(0, last_length - len(message))
-
-      print(f"\r{message}{padding}", end="", flush=True)
-
-      return message
-
-def starting_message():
-
-      print('\nCached data found. Loading...')
-      print('\nLoading complete!')
-      print('\nStarting the program...')
-      print('\nWELCOME TO POKEAPI-STUDY-PROJECT!')
-      print()
+      return msg
 
 def pokemon_answer_message(
             pokemon_input,
@@ -51,8 +31,9 @@ def pokemon_answer_message(
             return "[FATAL ERROR] cached data integrity violated!"
 
 def download_complete_msg(feature):
-      print(f"\n[{feature}]'s data download complete!")
-      print("\nChecking for cached data...")
+      msg = f"\n[{feature}]'s data download complete!"
+      return msg
 
 def data_missing_msg(feature):      
-      print(f"[{feature}]'s data missing, starting download.")
+      msg = f"[{feature}]'s data missing, starting download."
+      return msg
