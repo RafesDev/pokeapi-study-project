@@ -10,20 +10,23 @@ def clean_event(event,entry, placeholder):
 
 def label_info_updater(
                 entry, 
-                label, 
+                text, 
                 pokemon_search_by_names_databank,
                 pokemon_search_by_types_databank,
                 pokemon_search_by_names_file,
                 pokemon_search_by_types_file
 ):
   pokemon_input = entry.get().lower()
-  label.config(text=(pokemon_answer_message(
+  text.config(state="normal")
+  text.delete(1.0, tk.END)
+  text.insert(1.0, (pokemon_answer_message(
     pokemon_input,
     pokemon_search_by_names_databank,
     pokemon_search_by_types_databank,
     pokemon_search_by_names_file,
     pokemon_search_by_types_file
   )))
+  text.config(state="disabled")
 
 def data_verifier(
         pokemon_search_by_names_file,

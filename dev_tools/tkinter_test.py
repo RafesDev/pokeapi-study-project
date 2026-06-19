@@ -5,7 +5,10 @@ def clean_event(event):
         entry.delete(0, tk.END)
 
 def label_info_updater():
-  label.config(text=entry.get())
+    tk_text.config(state="normal")
+    tk_text.delete(1.0, tk.END)
+    tk_text.insert(1.0, entry.get())
+    tk_text.config(state="disabled")
 
 root = tk.Tk()
 
@@ -17,10 +20,8 @@ entry = tk.Entry(
     width=50
 )
 
-label = tk.Label(
-    root,
-    text=""
-)
+tk_text = tk.Text(root)
+tk_text.config(state="disabled")
 
 
 placeholder = "Enter a pokemon name or type"
@@ -37,7 +38,7 @@ button = tk.Button(
 
 entry.pack(pady=5, padx=5, side='left')
 button.pack(pady=5, side='left') 
-label.pack(pady=40)
+tk_text.pack(pady=40)
 
 root.mainloop()
 

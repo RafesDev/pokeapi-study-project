@@ -177,10 +177,7 @@ while running:
                   width=50
             )
 
-            label = tk.Label(
-                  root,
-                  text=""
-            )
+            text_tk = tk.Text(root)
 
 
             placeholder = "Enter a pokemon name or type"
@@ -195,7 +192,7 @@ while running:
                   command=lambda: (
                         label_info_updater(
                               entry, 
-                              label, 
+                              text_tk, 
                               pokemon_search_by_names_databank,
                               pokemon_search_by_types_databank,
                               pokemon_search_by_names_file,
@@ -209,7 +206,7 @@ while running:
 
             entry.pack(pady=5, padx=5, side='left')
             button.pack(pady=5, side='left') 
-            label.pack(pady=40)
+            text_tk.pack(pady=40)
 
    
             if window_already_activated == False:
