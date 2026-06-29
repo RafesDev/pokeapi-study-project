@@ -30,7 +30,28 @@ from modules.tkinter_utils import (
 )
 
 #* Functions:
+def download_types(data):
+      global types_download_progress
 
+      for pokemon in data['results']:
+
+            for type in types_fetcher(pokemon['url']):
+                  pokemon_search_by_types_databank[type].append(pokemon['name'])
+                  
+            types_download_progress += 1
+            
+      return types_download_progress
+
+def download_names(data):
+      global names_download_progress
+
+      for pokemon in data['results']:
+
+            pokemon_search_by_names_databank[pokemon['name']] = types_fetcher(pokemon['url'])
+
+            names_download_progress += 1
+      
+      return names_download_progress
 
 #* Dicts:
 
@@ -84,26 +105,13 @@ while running:
 
             data = response.json()
 
-      if Path.exists(pokemon_search_by_names_file) is False or names_download_progress == 0:
+      if Path.exists(pokemon_search_by_names_file) is False:
 
-            if names_download_progress == 0:
-                  print(data_missing_msg("search by name feature"))
+            download_names(data)
 
-            for pokemon in data['results']:
-                  
-                  names_download_progress += 1
+            download_progress_msg = f"[{(names_download_progress/pokemon_total)*100:.2f}%] Downloading <SEARCH BY NAMES> feature's data..."
 
-                  message = downloading_message(names_download_progress, pokemon_total)
-
-                  padding = " " * max(0, last_length - len(message))
-
-                  print(f"\r{message}{padding}", end="", flush=True)
-
-                  last_length = len(message)
-
-                  pokemon_search_by_names_databank[pokemon['name']] = types_fetcher(pokemon['url'])
-
-                   
+            print(download_progress_msg)
 
             if data['next'] is not None:
                   response = requests.get(data['next'])
@@ -116,28 +124,14 @@ while running:
 
                   print(download_complete_msg("search by name feature"))
 
-      elif Path.exists(pokemon_search_by_types_file) is False or types_download_progress == 0:
+      elif Path.exists(pokemon_search_by_types_file) is False:
 
-            if types_download_progress == 0:
+            download_types(data)
 
-                  print(data_missing_msg("search by type feature"))
+            download_progress_msg = f"[{(types_download_progress/pokemon_total)*100:.2f}%] Downloading <SEARCH BY TYPES> feature's data..."
 
-            for pokemon in data['results']:
-                  
-                  types_download_progress += 1
-
-                  message = downloading_message(types_download_progress, pokemon_total)
-
-                  padding = " " * max(0, last_length - len(message))
-
-                  print(f"\r{message}{padding}", end="", flush=True)
-
-                  last_length = len(message)
-
-
-                  for type in types_fetcher(pokemon['url']):
-                              pokemon_search_by_types_databank[type].append(pokemon['name'])
-                              
+            print(download_progress_msg)
+            
             if data['next'] is not None:
                   response = requests.get(data['next'])
                   data = response.json()
