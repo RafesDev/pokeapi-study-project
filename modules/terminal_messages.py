@@ -1,11 +1,5 @@
 from pathlib import Path
 
-# Prints the downloading message, with a progress bar and padding to overwrite the previous message.
-def downloading_message(pokemon_number, pokemon_total):
-
-      msg = (f"[{(pokemon_number / pokemon_total) * 100:.2f}%] Downloading Pokémon data from PokeAPI...")
-
-      return msg
 
 def pokemon_answer_message(
             pokemon_input,
@@ -29,11 +23,3 @@ def pokemon_answer_message(
             
       else:
             return "[FATAL ERROR] cached data integrity violated!"
-
-def download_complete_msg(feature):
-      msg = f"\n[{feature}]'s data download complete!"
-      return msg
-
-def data_missing_msg(feature):      
-      msg = f"[{feature}]'s data missing, starting download."
-      return msg

@@ -8,12 +8,6 @@ from collections import defaultdict
 import tkinter as tk
 
 #import modules:
-from modules.terminal_messages import (
-      downloading_message,
-      pokemon_answer_message,
-      download_complete_msg,
-      data_missing_msg
-)
 from modules.pokeapi_utils import (
       types_fetcher
 )
@@ -52,6 +46,36 @@ def download_names(data):
             names_download_progress += 1
       
       return names_download_progress
+
+def next_step_controller(data, feature):
+      if data['next'] is not None:
+            response = requests.get(data['next'])
+            data = response.json()
+
+            return data
+            
+      else:
+            if feature == "types":
+                  dict_to_json(
+                        pokemon_search_by_types_databank, 
+                        pokemon_search_by_types_file
+                  )
+
+                  msg = f"<SEARCH BY TYPES> data's feature download complete!"
+
+                  print(f'\n{msg}')
+                  
+            elif feature == "names":
+                  dict_to_json(
+                        pokemon_search_by_names_databank, 
+                        pokemon_search_by_names_file
+                  )
+
+                  msg = "<SEARCH BY NAMES> data's feature download complete!"
+
+                  print(f'\n{msg}')
+
+            return
 
 #* Dicts:
 
@@ -113,16 +137,7 @@ while running:
 
             print(download_progress_msg)
 
-            if data['next'] is not None:
-                  response = requests.get(data['next'])
-                  data = response.json()
-            else:
-                  dict_to_json(
-                        pokemon_search_by_names_databank, 
-                        pokemon_search_by_names_file
-                  )
-
-                  print(download_complete_msg("search by name feature"))
+            data = next_step_controller(data, "names")
 
       elif Path.exists(pokemon_search_by_types_file) is False:
 
@@ -132,18 +147,9 @@ while running:
 
             print(download_progress_msg)
             
-            if data['next'] is not None:
-                  response = requests.get(data['next'])
-                  data = response.json()
-            else:
+            data = next_step_controller(data, "types")
 
-                  dict_to_json(
-                        pokemon_search_by_types_databank, 
-                        pokemon_search_by_types_file
-                  )
-
-                  print(download_complete_msg("search by type feature"))
-      else:
+      else:             
             if data_already_loaded is False:
 
                   print('\nCached data found. Loading...')
