@@ -33,8 +33,6 @@ def download_types(data):
                   pokemon_search_by_types_databank[type].append(pokemon['name'])
                   
             types_download_progress += 1
-            
-      return types_download_progress
 
 def download_names(data):
       global names_download_progress
@@ -45,7 +43,6 @@ def download_names(data):
 
             names_download_progress += 1
       
-      return names_download_progress
 
 def next_step_controller(data, feature):
       if data['next'] is not None:
@@ -77,6 +74,35 @@ def next_step_controller(data, feature):
 
             return
 
+def download_step():
+      
+      if Path.exists(pokemon_search_by_names_file) is False:
+            global names_data
+
+            download_names(names_data)
+
+            download_progress_msg = f"[{(names_download_progress/pokemon_total)*100:.2f}%] Downloading <SEARCH BY NAMES> feature's data..."
+
+            print(download_progress_msg)
+
+            names_data = next_step_controller(names_data, "names")
+
+      elif Path.exists(pokemon_search_by_types_file) is False:
+            global types_data
+
+            download_types(types_data)
+
+            download_progress_msg = f"[{(types_download_progress/pokemon_total)*100:.2f}%] Downloading <SEARCH BY TYPES> feature's data..."
+
+            print(download_progress_msg)
+            
+            types_data = next_step_controller(types_data, "types")
+
+      else:
+            global data_already_downloaded
+            data_already_downloaded = True
+            return data_already_downloaded
+
 #* Dicts:
 
 pokemon_search_by_names_databank = {}
@@ -107,6 +133,7 @@ types_download_progress = pokemon_total
 # boolean:
 running = True
 starting_message_already_printed = False
+data_already_downloaded = False
 data_already_loaded = False
 window_already_activated = False
 
@@ -129,27 +156,22 @@ while running:
 
             data = response.json()
 
-      if Path.exists(pokemon_search_by_names_file) is False:
+            response = requests.get(
+            'https://pokeapi.co/api/v2/pokemon'
+            )
 
-            download_names(data)
+            names_data = response.json()
 
-            download_progress_msg = f"[{(names_download_progress/pokemon_total)*100:.2f}%] Downloading <SEARCH BY NAMES> feature's data..."
+            response = requests.get(
+            'https://pokeapi.co/api/v2/pokemon'
+            )
 
-            print(download_progress_msg)
+            types_data = response.json()
 
-            data = next_step_controller(data, "names")
+      download_step()
 
-      elif Path.exists(pokemon_search_by_types_file) is False:
+      if data_already_downloaded:
 
-            download_types(data)
-
-            download_progress_msg = f"[{(types_download_progress/pokemon_total)*100:.2f}%] Downloading <SEARCH BY TYPES> feature's data..."
-
-            print(download_progress_msg)
-            
-            data = next_step_controller(data, "types")
-
-      else:             
             if data_already_loaded is False:
 
                   print('\nCached data found. Loading...')
