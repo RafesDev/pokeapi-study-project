@@ -3582,7 +3582,8 @@
         "dragon"
     ],
     "raging-bolt": [
-        "No data, API request failed"
+        "electric",
+        "dragon"
     ],
     "iron-boulder": [
         "rock",
@@ -3946,7 +3947,7 @@
         "normal"
     ],
     "pikachu-original-cap": [
-        "No data, API request failed"
+        "electric"
     ],
     "pikachu-hoenn-cap": [
         "electric"
@@ -4327,7 +4328,8 @@
         "poison"
     ],
     "charizard-gmax": [
-        "No data, API request failed"
+        "fire",
+        "flying"
     ],
     "blastoise-gmax": [
         "water"
@@ -4812,5 +4814,7 @@
         "dragon",
         "ice"
     ],
-    "meowstic-female-mega": []
+    "meowstic-female-mega": [
+        "psychic"
+    ]
 }

@@ -5,4 +5,4 @@ response = requests.get(
       )
 data = response.json()
 
-print(data)
+print(data["results"][20])

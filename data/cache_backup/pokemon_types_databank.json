@@ -360,6 +360,7 @@
         "salazzle-totem",
         "marowak-totem",
         "darmanitan-galar-zen",
+        "charizard-gmax",
         "cinderace-gmax",
         "coalossal-gmax",
         "centiskorch-gmax",
@@ -517,6 +518,7 @@
         "moltres-galar",
         "cramorant-gulping",
         "cramorant-gorging",
+        "charizard-gmax",
         "butterfree-gmax",
         "corviknight-gmax",
         "braviary-hisui",
@@ -1063,6 +1065,7 @@
         "iron-hands",
         "iron-thorns",
         "miraidon",
+        "raging-bolt",
         "rotom-heat",
         "rotom-wash",
         "rotom-frost",
@@ -1077,6 +1080,7 @@
         "pikachu-phd",
         "pikachu-libre",
         "pikachu-cosplay",
+        "pikachu-original-cap",
         "pikachu-hoenn-cap",
         "pikachu-sinnoh-cap",
         "pikachu-unova-cap",
@@ -1548,7 +1552,8 @@
         "delphox-mega",
         "malamar-mega",
         "chimecho-mega",
-        "meowstic-male-mega"
+        "meowstic-male-mega",
+        "meowstic-female-mega"
     ],
     "rock": [
         "geodude",
@@ -1996,6 +2001,7 @@
         "archaludon",
         "hydrapple",
         "gouging-fire",
+        "raging-bolt",
         "giratina-origin",
         "kyurem-black",
         "kyurem-white",
@@ -2144,10 +2150,5 @@
         "malamar-mega",
         "absol-mega-z",
         "darkrai-mega"
-    ],
-    "No data, API request failed": [
-        "raging-bolt",
-        "pikachu-original-cap",
-        "charizard-gmax"
     ]
 }
