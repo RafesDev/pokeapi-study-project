@@ -1,13 +1,9 @@
 
-class MyFirstClass:
-  def __init__(self):
-    self.a = 0
+x = 9
 
-  def counting_function(self):
-     self.a += 1
+if int(x/8) != x/8:
+  y = int(x/8) + 1
+else:
+  y = int(x/8)
 
-class1 = MyFirstClass()
-
-for i in range(10000000):
-  class1.counting_function()
-  print(class1.a)
+print(y)

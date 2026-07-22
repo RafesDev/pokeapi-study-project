@@ -1,7 +1,7 @@
 import tkinter as tk
 
 from modules import (
-  download_utils,
+  data_utils,
   search_utils
 )
 
@@ -20,21 +20,28 @@ class ProgramFrame():
 
             self.frame_2 = tk.Frame(self.root)
 
+            self.frame_3 = tk.Frame(self.root)
+
             self.download_status_label = tk.Label(
                   self.frame_status,
-                  text=download_utils.download_vars.download_status)
+                  text=data_utils.download_vars.download_status)
 
             self.progress_label = tk.Label(
-                  self.frame_2,
-                  text=download_utils.download_vars.download_progress_msg)
+                  self.frame_1,
+                  text=data_utils.download_vars.download_progress_msg)
 
             self.entry = tk.Entry(
                   self.frame_1,
                   width=50
             )
 
-            self.text_tk = tk.Text(self.frame_2)
+            self.page_number = 1
 
+            self.previus_button = tk.Button(self.frame_3, text='<', font=('Arial', 20, 'bold'), command= lambda:self.page_controller('previus'))
+
+            self.page_number_label = tk.Button(self.frame_3, text=f'Page: {self.page_number}', font=('Arial', 20, 'bold'))
+
+            self.next_button = tk.Button(self.frame_3, text='>', font=('Arial', 20, 'bold'), command= lambda:self.page_controller('next'))
 
             self.placeholder = "Enter a pokemon name or type"
 
@@ -44,74 +51,129 @@ class ProgramFrame():
 
             self.button = tk.Button(
                   self.frame_1,
-                  text="Search",
-                  command=lambda:(
-                        self.label_info_updater(
-)))
+                  text="SEARCH",
+                  command= self.search_with_page_reset)
+            
+            self.entry.bind("<Return>", self.search_with_page_reset)
 
-      def label_info_updater(
-                  self
-            ):
-            pokemon_input = self.entry.get().lower()
-            self.text_tk.config(state="normal")
-            self.text_tk.delete(1.0, tk.END)
-            self.text_tk.insert(1.0, (search_utils.pokemon_answer_message(
-            pokemon_input,
-            )))
-            self.text_tk.config(state="disabled")
+            self.pokemon_search_total = 0
+
+            self.max_page = 1
+
+      def search_with_page_reset(self, event=None):
+            self.page_number = 1
+            self.page_number_label.config(text=f'Page: {self.page_number}')
+            self.search()
+
+
+      def search(self, event=None):
+            if data_utils.ids.databank == {}:
+                  data_utils.create_id()
+
+
+            self.pokemon_search_total = 0
+            self.max_page = 1
+            if self.entry.get() in data_utils.types.databank:
+
+                  for _ in data_utils.types.databank[self.entry.get()]:
+
+                        self.pokemon_search_total += 1
+
+                  if int(self.pokemon_search_total/8) != self.pokemon_search_total/8:
+                        self.max_page = int(self.pokemon_search_total/8) + 1
+                  else:
+                        self.max_page = int(self.pokemon_search_total/8)
+
+
+            search_utils.clean_last_search()
+
+            search_utils.display_pokemon_card(self.entry.get(), self.page_number, self.pokemon_search_total)
+
+            self.page_controller_widgets_pack()
+
+
+
+      def page_controller(self, direction):
+            if direction == 'next':
+
+                  self.page_number += 1
+
+
+            elif direction == 'previus':
+
+                  self.page_number -= 1
+
+            self.page_number_label.config(text=f'Page: {self.page_number}')
+
+            self.search()
+
+            self.page_controller_widgets_pack()
+
+
+
+      def page_controller_widgets_pack(self):
+            if self.max_page > 1:
+
+                  if self.page_number == 1:
+
+                        self.previus_button.pack_forget()
+                        self.page_number_label.pack_forget()
+                        self.next_button.pack_forget()
+
+                        self.page_number_label.pack(padx=4, side='left')
+
+                        self.next_button.pack(padx=2, side='left')
+
+
+                  elif self.page_number == self.max_page:
+
+                        self.previus_button.pack_forget()
+                        self.page_number_label.pack_forget()
+                        self.next_button.pack_forget()
+
+
+                        self.previus_button.pack(padx=2, side='left')
+
+                        self.page_number_label.pack(padx=4, side='left')
+
+
+                  else:
+                        self.previus_button.pack_forget()
+                        self.page_number_label.pack_forget()
+                        self.next_button.pack_forget()
+
+                        self.previus_button.pack(padx=2, side='left')
+
+                        self.page_number_label.pack(padx=4, side='left')
+
+                        self.next_button.pack(padx=2, side='left')
+            
+            else:
+                  self.previus_button.pack_forget()
+                  self.page_number_label.pack_forget()
+                  self.next_button.pack_forget()
+
+
 
       def update_label(self):
+            self.download_status_label.config(text=data_utils.download_vars.download_status)
 
-            self.download_status_label.config(text=download_utils.download_vars.download_status)
+            self.progress_label.config(text=data_utils.download_vars.download_progress_msg)
 
-            self.progress_label.config(text=download_utils.download_vars.download_progress_msg)
-
-
-
-
-
-### FRAMES:
-
-
-      
 download_screen = ProgramFrame("download")
 search_screen = ProgramFrame("search")
 details_screen = ProgramFrame("details")
-
-
-
-
-
-
-### MAIN SCREEN:
 
 entry = tk.Entry(
       search_screen.frame_1,
       width=50
 )
 
-text_tk = tk.Text(search_screen.frame_2)
 
 
-placeholder = "Enter a pokemon name or type"
+placeholder = "Enter a pokemon name, type or index"
 
 entry.insert(0, placeholder)
-
-#entry.bind("<FocusIn>",lambda event: clean_event(event, entry, placeholder))
-
-#button = tk.Button(
-#      search_screen.frame_1,
-#      text="Search",
-#      command=lambda: 
-#            label_info_updater(
-#                  entry, 
-#                  text_tk, 
-#                  names.databank,
-#                  types.databank,
-#                  names.file_path,
-#                  types.file_path
-#))
-
 
 class FrameSwitchState():
       def __init__(self):
@@ -130,3 +192,67 @@ def frame_switch(frame):
 def clean_event(event,entry, placeholder):
             if entry.get() == placeholder:
                   entry.delete(0, tk.END)
+
+def with_zeros(x):
+      x_str = str(x)
+      y = []
+      if x < 10:
+            y = ['000',x_str]
+      elif x < 100:
+            y = ['00', x_str]
+      elif x < 1000:
+            y = ['0', x_str]
+      elif x > 1000:
+            y = ['', x_str]
+
+      return ''.join(y)
+
+      
+
+class PokemonCard():
+      def __init__(self, name, parent):
+            self.types = data_utils.names.databank[name]
+            self.name = name
+            self.id = data_utils.ids.databank[name]
+
+            self.card = tk.Frame(parent, height=100, width=500 , bd=2, relief="raised")
+
+            self.card.pack_propagate(False)
+
+            self.card3 = tk.Frame(self.card)
+
+            self.card2 = tk.Frame(self.card3)
+
+            self.type1 = self.types[0]
+
+            if len(self.types) > 1:
+                  self.type2 = self.types[1]
+
+                  self.sub_title2 =tk.Button(self.card2, text= self.type2.capitalize(), font= ("Arial", 11))
+
+            
+
+            self.title = tk.Label(self.card3, text=self.name.upper(), font=("Arial", 16, "bold"))
+
+            self.sub_title1 =tk.Button(self.card2, text= self.type1.capitalize(), font= ("Arial", 11))
+
+            self.index = tk.Label(self.card, text= f'#{with_zeros(self.id)}', font=('Arial', 20, 'bold'))
+
+
+      def class_pack(self):
+
+            self.title.pack(pady=5)
+            self.sub_title1.pack(padx=1, side="left")
+
+            self.index.pack(padx=5, side='right')
+
+            if len(self.types) > 1:
+                  self.sub_title2.pack(side="left")
+
+            self.card.pack(pady=5)
+            self.card3.pack(padx=5, side='left')
+            self.card2.pack(pady=2, side='left')
+
+      def class_pack_forget(self):
+            self.card.destroy()
+            

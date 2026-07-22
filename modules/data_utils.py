@@ -12,6 +12,9 @@ class PokemonDownload():
                   self.databank = {}
             elif name == "types":
                   self.databank = defaultdict(list)
+            elif name == "ids":
+                  self.databank = {}
+                  self.databank2 = {}
 
             self.name = name
 
@@ -29,6 +32,8 @@ class PokemonDownload():
 
             self.pokemon_index_in_page = 0
 
+            self.already_downloaded_one = False
+
       def need_download(self):
             
             download_vars.download_status = "Download Status: Checking for cached data..."
@@ -44,6 +49,9 @@ class PokemonDownload():
             download_vars.download_status = f"Download Status: Downloading <{self.name.upper()}> data..."
             
             download_vars.download_progress_msg = f"[{(self.download_progress/download_vars.pokemon_total)*100:.2f}%] Downloading data..."
+
+            ###* DEV TOOL
+            #print(download_vars.download_progress_msg)
 
             if self.pokemon_index_in_page == 20:
                   self.pokemon_index_in_page = 0
@@ -72,7 +80,7 @@ class PokemonDownload():
             if self.pokemon_index_in_page >= len(self.data["results"]):
                   return True
             return False
-      
+
       def save_downloaded_data(self):
             self.file_path.parent.mkdir(parents=True, exist_ok=True)
             with open(self.file_path, "w") as file:
@@ -88,6 +96,7 @@ class PokemonDownload():
 
       def data_load(self):
             self.databank = json.load(open(self.file_path, "r"))
+            download_vars.download_status = f"Download Status: Nothing to download"
 
       
 def types_fetcher(pokemon_url):
@@ -115,6 +124,14 @@ def types_fetcher(pokemon_url):
 
       return types
 
+def create_id():
+      i = 0
+      for pokemon in names.databank:
+            i += 1
+            ids.databank[pokemon] = i
+            ids.databank2[i] = pokemon
+
+
 class DownloadState():
       def __init__(self):
 
@@ -138,3 +155,4 @@ download_vars = DownloadState()
 
 names = PokemonDownload("names")
 types = PokemonDownload("types")
+ids = PokemonDownload("ids")
