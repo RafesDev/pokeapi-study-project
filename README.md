@@ -5,7 +5,14 @@ My first API project made for learning purposes.
 ## Requirements
 
 - Python 3.10+
-- requests
+- requests 2.32.4+
+
+### Standard library (included in python installation):
+
+- tkinter
+- json
+- pathlib
+- collections
 
 ## Installation
 
