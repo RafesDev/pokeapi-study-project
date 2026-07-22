@@ -1,13 +1,13 @@
-# PokéAPI Study Project
+# Pokédex
 
-My first API project made for learning purposes.
+A desktop Pokédex application built with Python and the PokéAPI as a learning project.
 
 ## Requirements
 
 - Python 3.10+
 - requests 2.32.4+
 
-### Standard library (included in python installation):
+### Standard library (included with Python)
 
 - tkinter
 - json
@@ -16,8 +16,12 @@ My first API project made for learning purposes.
 
 ## Installation
 
+```bash
 pip install -r requirements.txt
+```
 
 ## Running
 
+```bash
 python main.py
+```
