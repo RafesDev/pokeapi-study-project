@@ -15,7 +15,7 @@ gui_utils.download_screen.frame_status.pack(pady=20)
 
 gui_utils.download_screen.frame_1.pack(expand=True, fill="both")
 
-home_activated = False
+first_run = True
 
 def main_loop():
       # DOWNLOAD
@@ -58,19 +58,22 @@ def main_loop():
 
       else:
 
-            gui_utils.frame_switch(gui_utils.search_screen.root)
-            gui_utils.search_screen.update_label()
-
             data_utils.names.data_load()
             data_utils.types.data_load()
+
+            
             gui_utils.search_screen.update_label()
 
-            global home_activated
+            global first_run
 
-            if home_activated == False:
+            if first_run:
                   gui_utils.search_screen.home()
 
-                  home_activated = True
+                  gui_utils.frame_switch(gui_utils.search_screen.root)
+
+                  first_run = False
+
+            gui_utils.search_screen.update_label()
 
            
       gui_utils.root.after(1, main_loop)
@@ -82,5 +85,5 @@ gui_utils.search_screen.entry.pack(pady=5, padx=5, side='left')
 gui_utils.search_screen.button.pack(pady=5, side='left')
 gui_utils.download_screen.download_status_label.pack(pady=20)
 gui_utils.download_screen.progress_label.pack(pady=150)
-      
+
 gui_utils.root.mainloop()

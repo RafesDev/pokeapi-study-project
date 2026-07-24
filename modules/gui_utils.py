@@ -2,7 +2,8 @@ import tkinter as tk
 
 from modules import (
   data_utils,
-  search_utils
+  search_utils,
+  details_screen_utils
 )
 
 root = tk.Tk()
@@ -39,11 +40,11 @@ class ProgramFrame():
 
             self.page_number = 1
 
-            self.previus_button = tk.Button(self.frame_3, text='<', font=('Arial', 20, 'bold'), command= lambda:self.page_controller('previus'))
+            self.previus_button = tk.Button(self.frame_3, text='<', font=('Arial', 20, 'bold'), command= lambda:self.page_controller('previus'), cursor='hand2')
 
-            self.page_number_label = tk.Button(self.frame_3, text=f'Page: {self.page_number}', font=('Arial', 20, 'bold'))
+            self.page_number_label = tk.Label(self.frame_3, text=f'Page: {self.page_number}', font=('Arial', 20, 'bold'), bd=2, relief="raised")
 
-            self.next_button = tk.Button(self.frame_3, text='>', font=('Arial', 20, 'bold'), command= lambda:self.page_controller('next'))
+            self.next_button = tk.Button(self.frame_3, text='>', font=('Arial', 20, 'bold'), command= lambda:self.page_controller('next'), cursor='hand2')
 
             self.placeholder = "Enter a pokemon NAME, TYPE or INDEX"
 
@@ -54,7 +55,9 @@ class ProgramFrame():
             self.button = tk.Button(
                   self.frame_1,
                   text="SEARCH",
-                  command= self.search_command)
+                  command= self.search_command,
+                  cursor='hand2'
+)
             
             self.entry.bind("<Return>", self.search_command)
 
@@ -62,7 +65,7 @@ class ProgramFrame():
 
             self.max_page = 1
 
-            self.home_button = tk.Button(self.frame_1, text='HOME', command= self.home)
+            self.home_button = tk.Button(self.frame_1, text='HOME', command= self.home, cursor='hand2')
 
       def search_command(self, event=None):
             self.search_with_page_reset()
@@ -249,7 +252,16 @@ def with_zeros(x):
 
       return ''.join(y)
 
+
+def open_details():
+      search_screen.root.pack_forget()
+
+      details_screen.root.grid()
       
+      details_screen_object.class_grid()
+
+details_screen_object = details_screen_utils.DetailsScreen(root)
+
 
 class PokemonCard():
 
@@ -281,13 +293,13 @@ class PokemonCard():
             if len(self.types) > 1:
                   self.type2 = self.types[1]
 
-                  self.sub_title2 =tk.Button(self.card2, text= self.type2.capitalize(), font= ("Arial", 11), command= lambda: self.type_button_command(text= self.type2.capitalize()))
+                  self.sub_title2 =tk.Button(self.card2, text= self.type2.capitalize(), font= ("Arial", 11), command= lambda: self.type_button_command(text= self.type2.capitalize()), cursor='hand2')
 
             
 
-            self.title = tk.Label(self.card3, text=self.name.upper(), font=("Arial", 16, "bold"))
+            self.title = tk.Button(self.card3, text=self.name.upper(), font=("Arial", 16, "bold"), cursor='hand2', bd=0, relief='flat', command=open_details)
 
-            self.sub_title1 =tk.Button(self.card2, text= self.type1.capitalize(), font= ("Arial", 11), command= lambda: self.type_button_command(text= self.type1.capitalize()))
+            self.sub_title1 =tk.Button(self.card2, text= self.type1.capitalize(), font= ("Arial", 11), command= lambda: self.type_button_command(text= self.type1.capitalize()), cursor='hand2')
 
             self.index = tk.Label(self.card, text= f'#{with_zeros(self.id)}', font=('Arial', 20, 'bold'))
 
