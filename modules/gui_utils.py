@@ -84,9 +84,9 @@ class ProgramFrame():
 
             self.pokemon_search_total = 0
             self.max_page = 1
-            if self.entry.get() in data_utils.types.databank:
+            if self.entry.get().lower() in data_utils.types.databank:
 
-                  for _ in data_utils.types.databank[self.entry.get()]:
+                  for _ in data_utils.types.databank[self.entry.get().lower()]:
 
                         self.pokemon_search_total += 1
 
@@ -99,7 +99,7 @@ class ProgramFrame():
 
             search_utils.clean_last_search()
 
-            search_utils.display_pokemon_card(self.entry.get(), self.page_number, self.pokemon_search_total)
+            search_utils.display_pokemon_card(self.entry.get().lower(), self.page_number, self.pokemon_search_total)
 
             self.page_controller_widgets_pack()
 
@@ -252,6 +252,9 @@ def with_zeros(x):
       
 
 class PokemonCard():
+
+      
+
       def __init__(self, name, parent):
             self.types = data_utils.names.databank[name]
             self.name = name
@@ -278,18 +281,24 @@ class PokemonCard():
             if len(self.types) > 1:
                   self.type2 = self.types[1]
 
-                  self.sub_title2 =tk.Button(self.card2, text= self.type2.capitalize(), font= ("Arial", 11))
+                  self.sub_title2 =tk.Button(self.card2, text= self.type2.capitalize(), font= ("Arial", 11), command= lambda: self.type_button_command(text= self.type2.capitalize()))
 
             
 
             self.title = tk.Label(self.card3, text=self.name.upper(), font=("Arial", 16, "bold"))
 
-            self.sub_title1 =tk.Button(self.card2, text= self.type1.capitalize(), font= ("Arial", 11))
+            self.sub_title1 =tk.Button(self.card2, text= self.type1.capitalize(), font= ("Arial", 11), command= lambda: self.type_button_command(text= self.type1.capitalize()))
 
             self.index = tk.Label(self.card, text= f'#{with_zeros(self.id)}', font=('Arial', 20, 'bold'))
 
+      def type_button_command(self, text, event=None):
+            search_screen.entry.delete(0, tk.END)
+            search_screen.entry.insert(0, text)
+            search_screen.search_command()
 
       def class_pack(self):
+
+            
 
             self.title.pack(pady=5, side='left')
             self.sub_title1.pack(padx=1, side="left")

@@ -35,7 +35,10 @@ def display_pokemon_card(
             pokemon_input = pokemon_input_.lower()
 
       
-            if pokemon_input in data_utils.names.databank:
+            if pokemon_input.lower() in data_utils.names.databank:
+
+                  
+
                   pokemon = pokemon_input
                   pokemon = gui_utils.PokemonCard(pokemon, gui_utils.search_screen.frame_2)
                   
@@ -45,18 +48,27 @@ def display_pokemon_card(
                   cards.cards_number += 1
             
 
-            elif pokemon_input in data_utils.types.databank:
+            elif pokemon_input.lower() in data_utils.types.databank:
+
+                  
 
                   pokemon_page_index = 0 + (pokemon_page_number-1)*7
+
+                  
 
                   for _ in range(7):
                               
                         if pokemon_page_index < pokemon_search_total:
 
+                              
+
                               pokemon = data_utils.types.databank[pokemon_input][pokemon_page_index]
+
+                              
 
                               pokemon = gui_utils.PokemonCard(pokemon, gui_utils.search_screen.frame_2)
 
+                              
                               pokemon.class_pack()
 
                               cards.cards_list.append(pokemon)
@@ -65,7 +77,9 @@ def display_pokemon_card(
                               pokemon_page_index += 1
             
 
-            elif pokemon_input.isdigit():
+            elif pokemon_input.lower().isdigit() and pokemon_input <= data_utils.download_vars.pokemon_total:
+
+                 
 
                   pokemon = data_utils.ids.databank2[int(pokemon_input)]
                   pokemon = gui_utils.PokemonCard(pokemon, gui_utils.search_screen.frame_2)
