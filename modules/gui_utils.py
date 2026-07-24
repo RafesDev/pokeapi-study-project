@@ -35,6 +35,8 @@ class ProgramFrame():
                   width=50
             )
 
+            self.button_got_clicked = False
+
             self.page_number = 1
 
             self.previus_button = tk.Button(self.frame_3, text='<', font=('Arial', 20, 'bold'), command= lambda:self.page_controller('previus'))
@@ -43,7 +45,7 @@ class ProgramFrame():
 
             self.next_button = tk.Button(self.frame_3, text='>', font=('Arial', 20, 'bold'), command= lambda:self.page_controller('next'))
 
-            self.placeholder = "Enter a pokemon name or type"
+            self.placeholder = "Enter a pokemon NAME, TYPE or INDEX"
 
             self.entry.insert(0, self.placeholder)
 
@@ -52,17 +54,26 @@ class ProgramFrame():
             self.button = tk.Button(
                   self.frame_1,
                   text="SEARCH",
-                  command= self.search_with_page_reset)
+                  command= self.search_command)
             
-            self.entry.bind("<Return>", self.search_with_page_reset)
+            self.entry.bind("<Return>", self.search_command)
 
             self.pokemon_search_total = 0
 
             self.max_page = 1
 
+            self.home_button = tk.Button(self.frame_1, text='HOME', command= self.home)
+
+      def search_command(self, event=None):
+            self.search_with_page_reset()
+            self.button_click_detector()
+
+      def button_click_detector(self):
+            self.button_got_clicked = True
+
       def search_with_page_reset(self, event=None):
             self.page_number = 1
-            self.page_number_label.config(text=f'Page: {self.page_number}')
+            self.page_number_label.config(text=f'Page: {self.page_number}/{self.max_page}')
             self.search()
 
 
@@ -79,11 +90,12 @@ class ProgramFrame():
 
                         self.pokemon_search_total += 1
 
-                  if int(self.pokemon_search_total/8) != self.pokemon_search_total/8:
-                        self.max_page = int(self.pokemon_search_total/8) + 1
+                  if int(self.pokemon_search_total/7) != self.pokemon_search_total/7:
+                        self.max_page = int(self.pokemon_search_total/7) + 1
                   else:
-                        self.max_page = int(self.pokemon_search_total/8)
+                        self.max_page = int(self.pokemon_search_total/7)
 
+            self.page_number_label.config(text=f'Page: {self.page_number}/{self.max_page}')
 
             search_utils.clean_last_search()
 
@@ -91,6 +103,32 @@ class ProgramFrame():
 
             self.page_controller_widgets_pack()
 
+      def home(self, event=None):
+            
+            if data_utils.ids.databank == {}:
+                  data_utils.create_id()
+
+
+            self.pokemon_search_total = 0
+            self.max_page = 1
+      
+
+            for _ in range(data_utils.download_vars.pokemon_total):
+
+                  self.pokemon_search_total += 1
+
+            if int(self.pokemon_search_total/7) != self.pokemon_search_total/7:
+                  self.max_page = int(self.pokemon_search_total/7) + 1
+            else:
+                  self.max_page = int(self.pokemon_search_total/7)
+
+            self.page_number_label.config(text=f'Page: {self.page_number}/{self.max_page}')
+
+            search_utils.clean_last_search()
+
+            search_utils.display_all_pokemon(self.page_number, self.pokemon_search_total)
+
+            self.page_controller_widgets_pack()
 
 
       def page_controller(self, direction):
@@ -103,9 +141,13 @@ class ProgramFrame():
 
                   self.page_number -= 1
 
-            self.page_number_label.config(text=f'Page: {self.page_number}')
+            self.page_number_label.config(text=f'Page: {self.page_number}/{self.max_page}')
 
-            self.search()
+            if self.button_got_clicked:
+                  self.search()
+
+            else:
+                  self.home()
 
             self.page_controller_widgets_pack()
 
@@ -219,9 +261,17 @@ class PokemonCard():
 
             self.card.pack_propagate(False)
 
-            self.card3 = tk.Frame(self.card)
+            self.card4 = tk.Frame(self.card, height=50, width=500)
 
-            self.card2 = tk.Frame(self.card3)
+            self.card4.pack_propagate(False)
+
+            self.card5 = tk.Frame(self.card, height=50, width=500)
+
+            self.card5.pack_propagate(False)
+
+            self.card3 = tk.Frame(self.card4)
+
+            self.card2 = tk.Frame(self.card5)
 
             self.type1 = self.types[0]
 
@@ -241,7 +291,7 @@ class PokemonCard():
 
       def class_pack(self):
 
-            self.title.pack(pady=5)
+            self.title.pack(pady=5, side='left')
             self.sub_title1.pack(padx=1, side="left")
 
             self.index.pack(padx=5, side='right')
@@ -250,8 +300,10 @@ class PokemonCard():
                   self.sub_title2.pack(side="left")
 
             self.card.pack(pady=5)
+            self.card5.pack(side='bottom')
+            self.card4.pack(side='top')
             self.card3.pack(padx=5, side='left')
-            self.card2.pack(pady=2, side='left')
+            self.card2.pack(padx=5, pady=2, side='left')
 
       def class_pack_forget(self):
             self.card.destroy()

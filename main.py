@@ -3,6 +3,8 @@ from modules import data_utils
 
 #* Main loop:
 
+gui_utils.root.title('Pokédex App')
+
 gui_utils.search_screen.frame_1.pack(pady=10)
 
 gui_utils.search_screen.frame_2.pack(pady=10)
@@ -13,7 +15,7 @@ gui_utils.download_screen.frame_status.pack(pady=20)
 
 gui_utils.download_screen.frame_1.pack(expand=True, fill="both")
 
-
+home_activated = False
 
 def main_loop():
       # DOWNLOAD
@@ -63,11 +65,19 @@ def main_loop():
             data_utils.types.data_load()
             gui_utils.search_screen.update_label()
 
-      gui_utils.root.after(1, main_loop)
+            global home_activated
 
+            if home_activated == False:
+                  gui_utils.search_screen.home()
+
+                  home_activated = True
+
+           
+      gui_utils.root.after(1, main_loop)
 
 gui_utils.root.after(1, main_loop)
 
+gui_utils.search_screen.home_button.pack(pady=5, side='left')
 gui_utils.search_screen.entry.pack(pady=5, padx=5, side='left')
 gui_utils.search_screen.button.pack(pady=5, side='left')
 gui_utils.download_screen.download_status_label.pack(pady=20)

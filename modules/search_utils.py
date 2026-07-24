@@ -47,9 +47,9 @@ def display_pokemon_card(
 
             elif pokemon_input in data_utils.types.databank:
 
-                  pokemon_page_index = 0 + (pokemon_page_number-1)*8
+                  pokemon_page_index = 0 + (pokemon_page_number-1)*7
 
-                  for _ in range(8):
+                  for _ in range(7):
                               
                         if pokemon_page_index < pokemon_search_total:
 
@@ -95,3 +95,26 @@ class ErrorLabel():
       
       def class_pack_forget(self):
             self.label.destroy()
+
+
+
+def display_all_pokemon(pokemon_page_number, pokemon_search_total):
+
+      data_utils.create_id()
+
+      pokemon_page_index = 0 + (pokemon_page_number-1)*7
+
+      for _ in range(7):
+                  
+            if pokemon_page_index < pokemon_search_total:
+
+                  pokemon = data_utils.ids.databank2[(pokemon_page_index+1)]
+
+                  pokemon = gui_utils.PokemonCard(pokemon, gui_utils.search_screen.frame_2)
+
+                  pokemon.class_pack()
+
+                  cards.cards_list.append(pokemon)
+                  cards.cards_number += 1
+
+                  pokemon_page_index += 1
