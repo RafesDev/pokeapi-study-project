@@ -151,6 +151,132 @@ class DownloadState():
 
 download_vars = DownloadState()
 
+class DetailsVars():
+      def __init__(self, pokemon_id):
+
+            print(pokemon_id)
+
+            response = requests.get(
+                  f'https://pokeapi.co/api/v2/pokemon/{pokemon_id}/'
+                  )
+            
+            self.data = response.json()
+
+            ### UI COMPONENTS:
+
+            ## POKEMON NAME 
+            self.name = self.data['name'] # STRING
+
+
+            ## POKEMON TYPES
+            self.types = self.data['types'] # DICTIONARIES LIST
+
+            # TYPE 1
+            self.type1 = self.types[0]['type']['name'] # STRING
+
+            # TYPE 2
+            self.type2 = self.types[1]['type']['name'] if len(self.types) > 1 else None # STRING
+
+
+            ## POKEMON ID
+            self.id = self.data['id'] # STRING
+
+            ## MOVES
+            self.moves_number_max = len(self.data['moves'])
+
+            self.move_number = 0
+
+            self.actual_move = PokemonMove(self.data, self.move_number)
+
+            ## POKEMON STATS
+            self.stats = self.data['stats']
+            #pprint.pprint(stats) # FOR TESTING PURPOSES
+
+            self.stats_dict = {} # STATS DICTIONARY (KEY: STAT NAME, VALUE: STAT VALUE)
+
+            for stat in range(len(self.stats)):
+                  stat_value = self.stats[stat]['base_stat'] # INT
+                  stat_name = self.stats[stat]['stat']['name'] # STRING
+                  self.stats_dict[stat_name] = stat_value
+
+            # HP
+            # ATTACK
+            # DEFENSE
+            # SPECIAL ATTACK
+            # SPECIAL DEFENSE
+            # SPEED
+
+
+            ## POKEMON IMAGE (FRONT PLUS BACK)
+            self.front = self.data['sprites']['front_default'] # PNG LINK
+            self.back = self.data['sprites']['back_default'] # PNG LINK
+
+            ## POKEMON EVOLUTIONS
+
+            self.family = [] # POKEMON EVOLUTIONS LIST
+
+            species = requests.get(self.data['species']['url']).json()
+            evolution_chain = requests.get(species['evolution_chain']['url']).json()
+
+
+            get_family(evolution_chain['chain'], self.family)
+
+            ## POKEMON DESCRIPTION
+            
+            self.description = get_description(self.data) # DESCRIPTION STRING
+
+      def next_move(self):
+            if self.move_number < self.moves_number_max-1:
+                  self.move_number += 1
+                  self.actual_move = PokemonMove(self.data, self.move_number)
+            else:
+                  pass
+
+      def previous_move(self):
+            if self.move_number > 0:
+                  self.move_number -= 1
+                  self.actual_move = PokemonMove(self.data, self.move_number)
+            else:
+                  pass
+
+class PokemonMove():
+      def __init__(self, data, move_index):
+            ## POKEMON MOVES
+            self.moves = data['moves'] # DICTIONARIES LIST
+            
+            move_data = requests.get(self.moves[move_index]['move']['url']).json()
+
+            ## MOVE NAME
+            self.move_name = self.moves[move_index]['move']['name'] # STRING
+
+            ## MOVE LVL LEARNED
+            self.lvl_learned = self.moves[move_index]['version_group_details'][0]['level_learned_at'] # INT
+
+            ## MOVE TYPE
+            self.move_type = move_data['type']['name'] # STRING
+
+            ## MOVE ACCURACY
+            self.move_accuracy = move_data['accuracy'] # INT
+
+            ## MOVE POWER
+            self.move_power = move_data['power'] # INT
+
+            ## MOVE PP
+            self.move_pp = move_data['pp'] # INT
+
+def get_family(node, family):
+      family.append(node['species']['name'])
+
+      for child in node['evolves_to']:
+            get_family(child, family)
+
+def get_description(data):
+                  species = requests.get(data['species']['url']).json()
+                  
+                  for i in range(len(species['flavor_text_entries'])):
+                        if species['flavor_text_entries'][i]['language']['name'] == 'en':
+                              return species['flavor_text_entries'][i]['flavor_text']  
+                        
 
 
 names = PokemonDownload("names")

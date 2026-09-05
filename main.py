@@ -1,9 +1,15 @@
+import tkinter as tk
 from modules import gui_utils
 from modules import data_utils
 
+
+root = tk.Tk()
+
+gui_utils.initialize_program_frames(root)
+
 #* Main loop:
 
-gui_utils.root.title('Pokédex App')
+root.title('Pokédex App')
 
 gui_utils.search_screen.frame_1.pack(pady=10)
 
@@ -75,10 +81,10 @@ def main_loop():
 
             gui_utils.search_screen.update_label()
 
-           
-      gui_utils.root.after(1, main_loop)
+      global root     
+      root.after(1, main_loop)
 
-gui_utils.root.after(1, main_loop)
+root.after(1, main_loop)
 
 gui_utils.search_screen.home_button.pack(pady=5, side='left')
 gui_utils.search_screen.entry.pack(pady=5, padx=5, side='left')
@@ -86,4 +92,4 @@ gui_utils.search_screen.button.pack(pady=5, side='left')
 gui_utils.download_screen.download_status_label.pack(pady=20)
 gui_utils.download_screen.progress_label.pack(pady=150)
 
-gui_utils.root.mainloop()
+root.mainloop()

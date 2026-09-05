@@ -1,4 +1,6 @@
+#POKEAPI-STUDY-PROJECT/modules/gui_utils.py
 import tkinter as tk
+from PIL import Image, ImageTk
 
 from modules import (
   data_utils,
@@ -6,14 +8,20 @@ from modules import (
   details_screen_utils
 )
 
-root = tk.Tk()
+download_screen = None
+search_screen = None
+details_screen = None
+entry = None
+placeholder = None
+frame_switch_vars = None
+root = None
 
 class ProgramFrame():
-      def __init__(self, name):
+      def __init__(self, name, parent):
 
             self.name = name
 
-            self.root = tk.Frame(root)
+            self.root = tk.Frame(parent)
 
             self.frame_status = tk.Frame(self.root)
       
@@ -113,6 +121,7 @@ class ProgramFrame():
 
 
             self.pokemon_search_total = 0
+            self.button_got_clicked = False
             self.max_page = 1
       
 
@@ -205,27 +214,12 @@ class ProgramFrame():
 
             self.progress_label.config(text=data_utils.download_vars.download_progress_msg)
 
-download_screen = ProgramFrame("download")
-search_screen = ProgramFrame("search")
-details_screen = ProgramFrame("details")
-
-entry = tk.Entry(
-      search_screen.frame_1,
-      width=50
-)
-
-
-
-placeholder = "Enter a pokemon name, type or index"
-
-entry.insert(0, placeholder)
-
 class FrameSwitchState():
       def __init__(self):
             self.actual_frame = None
             self.main_frames_list = [search_screen.root, download_screen.root, details_screen.root]
 
-frame_switch_vars = FrameSwitchState()
+
 
 def frame_switch(frame):
       if frame_switch_vars.actual_frame != frame:
@@ -247,21 +241,63 @@ def with_zeros(x):
             y = ['00', x_str]
       elif x < 1000:
             y = ['0', x_str]
-      elif x > 1000:
+      elif x >= 1000:
             y = ['', x_str]
 
       return ''.join(y)
 
+class ActualPokeID():
+      def __init__(self):
+            self.id = None
+            self.data = data_utils.DetailsVars(1)
 
-def open_details():
+
+def open_details(id):
+
+      
+      details_screen.root.pack(anchor='center', expand=True, fill='both')
+
+      actual_poke_id.id = id
+      actual_poke_id.data = data_utils.DetailsVars(actual_poke_id.id)
+
+      details_screen_object.vars_def(details_screen.root)
+
       search_screen.root.pack_forget()
 
-      details_screen.root.grid()
+      root.rowconfigure(0, weight=1)
+      root.columnconfigure(0, weight=1)
+
       
       details_screen_object.class_grid()
 
-details_screen_object = details_screen_utils.DetailsScreen(root)
 
+      details_screen_object.root.bind('<Configure>', details_screen_object.on_resize)
+     
+
+      print(actual_poke_id.data.name)
+      print(actual_poke_id.id)
+
+def type_color(type):
+      type_colors = {
+    "normal":   "#A9A878",
+    "bug":      "#A8B821",
+    "fighting": "#C03028",
+    "ghost":    "#715899",
+    "electric": "#F8D030",
+    "flying":   "#A890F0",
+    "steel":    "#B8B8D0",
+    "psychic":  "#F85888",
+    "poison":   "#A040A1",
+    "fire":     "#F08030",
+    "ice":      "#98D8D8",
+    "ground":   "#E0C068",
+    "water":    "#6890F0",
+    "dragon":   "#7038F8",
+    "rock":     "#B8A038",
+    "grass":    "#78C850",
+    "dark":     "#6F5848",
+}
+      return type_colors[type.lower()]
 
 class PokemonCard():
 
@@ -293,13 +329,13 @@ class PokemonCard():
             if len(self.types) > 1:
                   self.type2 = self.types[1]
 
-                  self.sub_title2 =tk.Button(self.card2, text= self.type2.capitalize(), font= ("Arial", 11), command= lambda: self.type_button_command(text= self.type2.capitalize()), cursor='hand2')
+                  self.sub_title2 =tk.Button(self.card2, text= self.type2.capitalize(), font= ("Arial", 11), command= lambda: self.type_button_command(text= self.type2.capitalize()), cursor='hand2', bg=type_color(self.type2))
 
             
 
-            self.title = tk.Button(self.card3, text=self.name.upper(), font=("Arial", 16, "bold"), cursor='hand2', bd=0, relief='flat', command=open_details)
+            self.title = tk.Button(self.card3, text=self.name.upper(), font=("Arial", 16, "bold"), cursor='hand2', bd=0, relief='flat', command= lambda: open_details(self.id))
 
-            self.sub_title1 =tk.Button(self.card2, text= self.type1.capitalize(), font= ("Arial", 11), command= lambda: self.type_button_command(text= self.type1.capitalize()), cursor='hand2')
+            self.sub_title1 =tk.Button(self.card2, text= self.type1.capitalize(), font= ("Arial", 11), command= lambda: self.type_button_command(text= self.type1.capitalize()), cursor='hand2', bg=type_color(self.type1))
 
             self.index = tk.Label(self.card, text= f'#{with_zeros(self.id)}', font=('Arial', 20, 'bold'))
 
@@ -328,4 +364,38 @@ class PokemonCard():
 
       def class_pack_forget(self):
             self.card.destroy()
-            
+
+
+
+
+
+def initialize_program_frames(parent):
+      global download_screen, search_screen, details_screen, root
+
+      root = parent
+      
+      download_screen = ProgramFrame("download", root)
+      search_screen = ProgramFrame("search", root)
+      details_screen = ProgramFrame("details", root)
+
+
+
+
+      global frame_switch_vars, actual_poke_id, details_screen_object, entry, placeholder
+
+      entry = tk.Entry(
+            search_screen.frame_1,
+            width=50
+      )
+
+
+
+      placeholder = "Enter a pokemon name, type or index"
+
+      entry.insert(0, placeholder)
+
+      frame_switch_vars = FrameSwitchState()
+      details_screen_object = details_screen_utils.DetailsScreen()
+
+actual_poke_id = ActualPokeID()
+

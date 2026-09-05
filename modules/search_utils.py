@@ -77,17 +77,22 @@ def display_pokemon_card(
                               pokemon_page_index += 1
             
 
-            elif pokemon_input.lower().isdigit() and pokemon_input <= data_utils.download_vars.pokemon_total:
+            elif pokemon_input.lower().isdigit():
 
-                 
+                  if int(pokemon_input) <= data_utils.download_vars.pokemon_total:
 
-                  pokemon = data_utils.ids.databank2[int(pokemon_input)]
-                  pokemon = gui_utils.PokemonCard(pokemon, gui_utils.search_screen.frame_2)
                   
-                  pokemon.class_pack()
 
-                  cards.cards_list.append(pokemon)
-                  cards.cards_number += 1
+                        pokemon = data_utils.ids.databank2[int(pokemon_input)]
+                        pokemon = gui_utils.PokemonCard(pokemon, gui_utils.search_screen.frame_2)
+                        
+                        pokemon.class_pack()
+
+                        cards.cards_list.append(pokemon)
+                        cards.cards_number += 1
+
+            elif pokemon_input.isspace() or pokemon_input == '':
+                  gui_utils.search_screen.home()
 
             else:
                   label = ErrorLabel()
